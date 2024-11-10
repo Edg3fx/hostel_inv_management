@@ -1,69 +1,60 @@
-var express = require ('express');
-var session = require ('express-session');
-var cookie = require ('cookie-parser');
-var path = require ('path');
-var ejs= require ('ejs');
-var multer = require('multer');
-var path = require ('path');
-var async = require ('async');
-var nodemailer = require('nodemailer'); /////////////
-var crypto = require ('crypto');
-var expressValidator = require ('express-validator');
-var  sweetalert = require('sweetalert2');
-var app = express();
+require('dotenv').config();
+const express = require('express');
+const session = require('express-session');
+const passport = require('./auth/passport-config');
+const path = require('path');
+const db = require('./config/database');
 
+const app = express();
 
+app.use(session({
+  secret: process.env.SESSION_SECRET,
+  resave: false,
+  saveUninitialized: false
+}));
 
-var bodyParser = require ('body-parser');
+app.use(passport.initialize());
+app.use(passport.session());
 
-var  login = require ('./controllers/login');
-var  home = require ('./controllers/home');
-var  signup = require ('./controllers/signup');
-var add_doc = require('./controllers/add_doctor');
-var  doc_controller = require ('./controllers/doc_controller');
-var db = require ('./models/db_controller');
-var reset = require('./controllers/reset_controller');
-var set = require('./controllers/set_controller');
-var employee = require ('./controllers/employee.js');
-var logout = require ('./controllers/logout');
-var verify = require ('./controllers/verify');
-var store = require ('./controllers/store');
-var landing = require ('./controllers/landing');
-var complain = require ('./controllers/complain');
-var appointment = require ('./controllers/appointment');
+// Serve static files from the 'public' directory
+app.use(express.static(path.join(__dirname, 'public')));
 
-var receipt = require ('./controllers/receipt');
-
-var app = express();
-
-
-app.set('view engine', 'ejs');
-
-app.use(express.static('./public'));
-app.use(bodyParser.urlencoded({extended : true}));
-app.use(bodyParser.json());
-app.use(cookie());
-//app.use(expressValidator());
-
-
-var server =app.listen(3000 , function(){
-
-    console.log('server started');
+// Home route
+app.get('/', (req, res) => {
+  res.send(`<h1>Welcome to IIITDMJ Auth App</h1>
+            ${req.isAuthenticated() ? `<p>Hello, ${req.user.email} | <a href="/logout">Logout</a></p>` : `<a href="/auth/google">Login with Google</a>`}`);
 });
 
-app.use('/login' ,login);
-app.use('/home' , home);
-app.use('/signup' , signup);
-app.use('/doctors', doc_controller);
-app.use('/resetpassword' ,reset);
-app.use('/setpassword',set);
-app.use('/employee',employee);
-app.use ('/logout',logout);
-app.use ('/verify', verify);
-app.use ('/store',store);
-app.use ('/',landing);
-app.use ('/complain',complain);
-app.use ('/appointment',appointment);
-app.use('/receipt',receipt);
+// Auth route to initiate Google authentication
+app.get('/auth/google', passport.authenticate('google', { scope: ['profile', 'email'] }));
 
-// app.use('/doctors/add_doctor',add_doc);
+// Callback route for Google authentication
+app.get('/auth/google/callback', 
+  passport.authenticate('google', { failureRedirect: '/' }),
+  (req, res) => {
+    console.log("Authenticated successfully, redirecting to /home");
+    res.redirect('/home');
+  }
+);
+
+// Logout route
+app.get('/logout', (req, res, next) => {
+  req.logout((err) => {
+    if (err) { return next(err); }
+    console.log("Logged out successfully, redirecting to /home");
+    res.redirect('/home');
+  });
+});
+
+// Route to serve the home.html file
+app.get('/home', (req, res) => {
+  if (req.isAuthenticated()) {
+    res.sendFile(path.join(__dirname, 'public', 'home.html'));
+  } else {
+    res.redirect('/');
+  }
+});
+
+app.listen(3000, () => {
+  console.log('Server started on http://localhost:3000');
+});

@@ -24,6 +24,7 @@ var landing = require ('./controllers/landing');
 var complain = require ('./controllers/complain');
 var appointment = require ('./controllers/appointment');
 var logs = require('./controllers/logs')
+var students = require("./controllers/students.js")
 
 var receipt = require ('./controllers/receipt');
 
@@ -59,5 +60,6 @@ app.use ('/complain',complain);
 app.use ('/appointment',appointment);
 app.use('/receipt',receipt);
 app.use('/logs', logs);
+app.use('/students', students)
 
 // app.use('/doctors/add_doctor',add_doc);

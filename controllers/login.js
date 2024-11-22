@@ -66,7 +66,7 @@ router.post(
                             response.send('Please verify your email');
                         } else {
                             sweetalert.fire('Logged In!');
-                            response.redirect('/home');
+                            response.redirect('/students');
                         }
                     } else {
                         response.send('Incorrect username / password');

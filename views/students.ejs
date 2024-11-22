@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Management System - Student Interface</title>
+    <link rel="stylesheet" href="/assets/css/egg.css">
+</head>
+<body>
+    <header>
+        <div class="logo">Hostel Management</div>
+        <nav>
+            <ul>
+                <li><a href="#">Dashboard</a></li>
+                <li><a href="#">My Rooms</a></li>
+                <li><a href="#">Inventory</a></li>
+                <li><a href="#">Bookings</a></li>
+                <li><a href="#">Support</a></li>
+                <li><a href="/logout">Logout</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main>
+        <section class="dashboard">
+            <h1>Welcome, my nigga!</h1>
+            <div class="quick-stats">
+                <div class="stat-card">Current Room Status</div>
+                <div class="stat-card">Upcoming Bookings</div>
+                <div class="stat-card">Inventory Alerts</div>
+            </div>
+            <div class="action-buttons">
+                <button>View My Room</button>
+                <button>Book a Room</button>
+                <button>Check Inventory</button>
+            </div>
+        </section>
+        <section class="my-rooms">
+            <h2>My Rooms</h2>
+            <div class="room-details">  
+                <p>Room Number: 101</p>
+                <p>Type: Single Room</p>
+                <p>Status: Occupied</p>
+                <p>Amenities: Wi-Fi, AC, Kitchen</p>
+                <button><a style="color: white; text-decoration: none;" href="/students/addRequest">Request Utility</a></button>
+                <button>Check-out</button>
+            </div>
+        </section>
+
+
+
+    <footer>
+        <p>Contact Info: Hostel Address | Phone Number | Email</p>
+    </footer>
+</body>
+</html>

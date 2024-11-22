@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Nov 10, 2024 at 11:26 AM
+-- Generation Time: Nov 22, 2024 at 09:41 PM
 -- Server version: 10.4.32-MariaDB
 -- PHP Version: 8.2.12
 
@@ -202,8 +202,34 @@ CREATE TABLE `maintenancelog` (
   `log_id` int(11) NOT NULL,
   `date_completed` date DEFAULT NULL,
   `request_id` int(11) DEFAULT NULL,
-  `student_id` varchar(8) DEFAULT NULL
+  `student_id` varchar(8) DEFAULT NULL,
+  `action_type` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `maintenancelog`
+--
+
+INSERT INTO `maintenancelog` (`log_id`, `date_completed`, `request_id`, `student_id`, `action_type`) VALUES
+(1, '2024-09-22', 19, '23BDS123', 'Approved'),
+(2, '2024-09-22', 19, '23BDS123', 'Approved'),
+(3, '2024-10-23', 19, '23BDS123', 'Approved'),
+(12, '2024-11-10', 27, '23BCS282', 'Accepted Request'),
+(13, '2024-11-10', 27, '23BCS282', 'Rejected Request'),
+(14, '2024-02-11', 8, '23BCS294', 'Accepted Request'),
+(15, '2024-02-11', 8, '23BCS294', 'Accepted Request'),
+(16, '2023-12-11', 28, '22BDS065', 'Added Pending'),
+(17, '2024-11-16', 29, '23BEC011', 'Added Pending'),
+(18, '0000-00-00', 30, 'fansdams', 'Added Pending'),
+(19, '0000-00-00', 30, 'fansdams', 'Rejected Request'),
+(20, '0000-00-00', 30, 'fansdams', 'Accepted Request'),
+(21, '0000-00-00', 30, 'fansdams', 'Rejected Request'),
+(22, '0000-00-00', 30, 'fansdams', 'Accepted Request'),
+(23, '2024-11-10', 31, '23BCS293', 'Added Pending'),
+(24, '2024-11-10', 31, '23BCS293', 'Accepted Request'),
+(25, '2024-11-20', 32, '23BCS281', 'Added Pending'),
+(26, '2024-11-20', 32, '23BCS281', 'Accepted Request'),
+(27, '2024-11-10', 11, '23BCS295', 'Accepted Request');
 
 -- --------------------------------------------------------
 
@@ -218,6 +244,18 @@ CREATE TABLE `resource` (
   `price` int(11) DEFAULT NULL,
   `p_date` date DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `resource`
+--
+
+INSERT INTO `resource` (`resource_id`, `resource_name`, `quantity`, `price`, `p_date`) VALUES
+(1, 'Table', 99, 1200, '2024-11-16'),
+(2, 'Chair', 8, 400, '2020-07-11'),
+(3, 'Fan', 14, 2000, '2020-12-11'),
+(4, 'Tube light', 86, 1200, '2020-11-11'),
+(5, 'Bed', 50, 3000, '2020-10-11'),
+(6, 'Cupboard', 39, 3500, '2024-11-16');
 
 -- --------------------------------------------------------
 
@@ -240,10 +278,20 @@ CREATE TABLE `resourcerequests` (
 --
 
 INSERT INTO `resourcerequests` (`request_id`, `room_no`, `resource_id`, `student_id`, `quantity`, `status`, `request_date`) VALUES
-(7, 'B203', 1, '23BCS295', 6, 'Approved', '0000-00-00'),
-(8, 'A405', 6, '23BCS294', 6, 'Pending', '2024-02-11'),
-(9, 'B201', 2, '23BCS284', 2, 'Pending', '2024-11-10'),
-(10, 'A402', 1, '23BCS294', 12345, 'Pending', '2024-11-11');
+(8, 'A405', 6, '23BCS294', 6, 'Approved', '2024-02-11'),
+(9, 'B201', 2, '23BCS284', 2, 'Approved', '2024-11-10'),
+(11, 'A405', 4, '23BCS295', 2, 'Approved', '2024-11-10'),
+(17, 'F302', 6, '23BCS288', 1, 'Approved', '2024-11-12'),
+(18, 'pfai', 2, '23BCS293', 4, 'Approved', '2024-11-10'),
+(19, 'G102', 5, '23BDS123', 2, 'Approved', '2024-10-11'),
+(23, 'A202', 4, '23BCS251', 2, 'Approved', '2024-11-13'),
+(25, 'G406', 4, '23BCS105', 2, 'Approved', '2024-02-11'),
+(27, 'G104', 2, '23BCS282', 3, 'Rejected', '2024-11-10'),
+(28, 'E302', 1, '22BDS065', 2, 'Pending', '2023-12-11'),
+(29, 'G403', 3, '23BEC011', 1, 'Pending', '2024-11-16'),
+(30, 'sghk', 3, 'fansdams', 3, 'Approved', '0000-00-00'),
+(31, 'F401', 1, '23BCS293', 1, 'Approved', '2024-11-10'),
+(32, 'G103', 4, '23BCS281', 2, 'Approved', '2024-11-20');
 
 -- --------------------------------------------------------
 
@@ -305,6 +353,30 @@ INSERT INTO `temp` (`id`, `email`, `token`) VALUES
 (19, 'test555@yopmail.com', '46fn0pl3'),
 (19, 'test555@yopmail.com', 'w6pvf2oq'),
 (21, 'te555@yopmail.com', '9sfs6gu8');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `user`
+--
+
+CREATE TABLE `user` (
+  `id` int(11) NOT NULL,
+  `google_id` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `username` varchar(255) NOT NULL,
+  `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
+  `user_type` varchar(7) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `user`
+--
+
+INSERT INTO `user` (`id`, `google_id`, `email`, `username`, `created_at`, `updated_at`, `user_type`) VALUES
+(1, 'fhdjs47382afg876', '23bcs288@iiitdmj.ac.in', 'Joshua Jose Felix', '2024-11-22 20:39:33', '2024-11-22 20:39:33', 'Admin'),
+(2, 'afh3543edfgr43dc', '23bcs282@iiitdmj.ac.in', 'Abel Shine Varghese', '2024-11-22 20:39:33', '2024-11-22 20:39:33', 'Student');
 
 -- --------------------------------------------------------
 
@@ -433,6 +505,13 @@ ALTER TABLE `store`
   ADD PRIMARY KEY (`id`);
 
 --
+-- Indexes for table `user`
+--
+ALTER TABLE `user`
+  ADD PRIMARY KEY (`id`),
+  ADD UNIQUE KEY `email` (`email`);
+
+--
 -- Indexes for table `users`
 --
 ALTER TABLE `users`
@@ -494,25 +573,31 @@ ALTER TABLE `login`
 -- AUTO_INCREMENT for table `maintenancelog`
 --
 ALTER TABLE `maintenancelog`
-  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `log_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=28;
 
 --
 -- AUTO_INCREMENT for table `resource`
 --
 ALTER TABLE `resource`
-  MODIFY `resource_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `resource_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT for table `resourcerequests`
 --
 ALTER TABLE `resourcerequests`
-  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+  MODIFY `request_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT for table `store`
 --
 ALTER TABLE `store`
   MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
+-- AUTO_INCREMENT for table `user`
+--
+ALTER TABLE `user`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=3;
 
 --
 -- AUTO_INCREMENT for table `users`

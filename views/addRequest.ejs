@@ -9,8 +9,6 @@
 
   
     <div class="main-wrapper">
-        <%- include('./view-partials/header') -%>
-        <%- include('./view-partials/sidebar') %>
 
         <div class="page-wrapper">
             <div class="content">
@@ -21,7 +19,7 @@
                 </div>
                 <div class="row">
                     <div class="col-lg-8 offset-lg-2">
-                        <form method="POST">
+                        <form method="POST" action="/students/addRequest">
                             <div class="row">
                                 <div class="col-md-6">
                                     <div class="form-group">

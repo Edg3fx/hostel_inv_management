@@ -23,12 +23,18 @@ router.get('/addRequest', (req,res) => {
 });
 
 router.post('/addRequest', (req,res) => {
+    
+    console.log('POST request to /students/addRequest received:', req.body);
+    // Process request here
+    
     db.addRequest(
         req.body.room_no, req.body.resource_id, req.body.student_id,
         req.body.request_date,req.body.quantity, (err,result) => {
-        res.redirect('/appointment');
-    });
+            console.log("Request added successfully: ", result);
+            res.redirect('/student');
+        });
 });
+
 
 
 router.get('/edit_appointment/:id', (req,res) => {
@@ -46,7 +52,7 @@ router.post('/edit_appointment/:id', (req, res) => {
     db.editappointment(
         id,req.body.p_name,req.body.department,req.body.d_name,req.body.date,
         req.body.time,req.body.email,req.body.phone, (err,result) => {
-        res.redirect('/appointment');
+        res.redirect('/appointment/');
     });
 });
 

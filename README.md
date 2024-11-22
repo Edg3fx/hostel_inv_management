@@ -34,6 +34,40 @@ The database system works using 5 tables as follows:
 
 The table structure is described in detail below
 
-### Users Table
+### 1. Users Table
 
-The `users` table has 5 main attributes: 
+The `room` table has 3 attributes: 
+- *`room_no (INT)`*
+- *`capacity (INT)`*
+- *`block_id (VARCHAR)`*
+
+### 2. Resource Table 
+
+The `resource` table has 5 attributes: 
+- *`resource_id (INT)`*
+- *`resource_name (VARCHAR)`*
+- *`quantity (INT)`*
+- *`price (INT)`*
+- *`p_date (DATE)`*
+
+### 3. Resource Requests Table
+
+The `resourcerequests` table has 7 attributes:
+- *`request_id`*
+- *`room_no`*
+- *`resource_id`*
+- *`student_id`*
+- *`quantity`*
+- *`status`*
+- *`request_date`*
+
+### 4. Maintenance Log Table
+
+The `maintenancelog` table has 5 attributes:
+- *`log_id`*
+- *`date_completed`*
+- *`request_id`*
+- *`student_id`*
+- *`action_type`*
+
+This table structure runs our database system. 

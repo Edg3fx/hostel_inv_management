@@ -1,4 +1,5 @@
-var mysql = require("mysql");
+const { log } = require("async");
+var mysql = require("mysql2");
 require("dotenv").config()
 
 //module.exports = router;
@@ -73,10 +74,14 @@ module.exports.addRequest = (room_no, resource_id, student_id, request_date, qua
     console.error("One or more parameters are undefined or null");
     return callback(new Error("Invalid parameters"));   // Terminates function and returns error before query execution
   }
-
+  var currentDate = new Date();
+  var year = currentDate.getFullYear();
+  var day = String(currentDate.getDate()).padStart(2, '0');
+  var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+  var cur_date = `${year}-${month}-${day}`;
   const query1 = `
     INSERT INTO resourcerequests (room_no, resource_id, student_id, quantity, status, request_date)
-    VALUES ('${room_no}', ${resource_id}, '${student_id}', ${quantity}, '${status}', '${request_date}');
+    VALUES ('${room_no}', ${resource_id}, '${student_id}', ${quantity}, '${status}', '${cur_date}');
   `;
 
 
@@ -84,13 +89,18 @@ module.exports.addRequest = (room_no, resource_id, student_id, request_date, qua
     if (err) {
       return callback(err);
     }
+    var currentDate = new Date();
+    var year = currentDate.getFullYear();
+    var day = String(currentDate.getDate()).padStart(2, '0');
+    var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+    var log_date = `${year}-${month}-${day}`;
 
     const reqId = result.insertId;  // To add log req addition to maintenance log
     console.log("Inserted ID: ", reqId);
 
     const query2 =  `
       INSERT INTO maintenancelog (date_completed, request_id, student_id, action_type)
-      VALUES ('${request_date}', ${reqId}, '${student_id}', "Added Pending");
+      VALUES ('${log_date}', ${reqId}, '${student_id}', "Added Pending");
     `
 
     con.query(query2, callback); 
@@ -162,12 +172,15 @@ module.exports.validateAndApproveRequest = function (requestId, callback) {
           const {request_date, student_id} = result1[0];
           console.log("Result of retrieving requests Query is " + student_id + " and " + request_date);
 
-          const localDate = new Date(request_date);
-          const formattedDate = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
           
+          var currentDate = new Date();
+          var year = currentDate.getFullYear();
+          var day = String(currentDate.getDate()).padStart(2, '0');
+          var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+          var log_date = `${year}-${month}-${day}`;
           const logApprovalQuery = ` 
                   INSERT INTO maintenancelog (date_completed, request_id, student_id, action_type)
-                  VALUES ('${formattedDate}', ${requestId}, '${student_id}', "Accepted Request");
+                  VALUES ('${log_date}', ${requestId}, '${student_id}', "Accepted Request");
           `;
           con.query(logApprovalQuery, callback); // Adds Approved request into log
         })
@@ -190,12 +203,15 @@ module.exports.rejectRequest = function (id, callback) {
       const {request_date, student_id} = result[0];
       console.log("Result of retrieving requests Query is " + student_id + " and " + request_date);
 
-      const localDate = new Date(request_date);
-      const formattedDate = `${localDate.getFullYear()}-${String(localDate.getMonth() + 1).padStart(2, '0')}-${String(localDate.getDate()).padStart(2, '0')}`;
-      
+      var currentDate = new Date();
+      var year = currentDate.getFullYear();
+      var day = String(currentDate.getDate()).padStart(2, '0');
+      var month = String(currentDate.getMonth() + 1).padStart(2, '0');
+      var log_date = `${year}-${month}-${day}`;
+
       const logRejectionQuery = `
         INSERT INTO maintenancelog (date_completed, request_id, student_id, action_type)
-        VALUES ('${formattedDate}', ${id}, '${student_id}', "Rejected Request");
+        VALUES ('${log_date}', ${id}, '${student_id}', "Rejected Request");
       `;
       con.query(logRejectionQuery, callback); // Adds rejection of request to maintenance log
     })
@@ -211,47 +227,28 @@ module.exports.deleteRequest = function (id, callback) {
 /* ---- Resource Table Functions ---- */
 
 module.exports.getResources = function (callback) {
-  var query = "select *from resource order by resource_id desc";
-  console.log(query);
+  var query = "SELECT * FROM resource ORDER BY resource_id DESC";
   con.query(query, callback);
 };
 
-module.exports.editmed = function (
-  resource_id,
-  quantity,
-  callback
-) {
-  var query =
-    "update resource set quantity='" +
-    quantity +
-    "' where resource_id=" +
-    resource_id;
-  console.log(query);
+module.exports.editmed = function (resource_id, quantity, callback) {
+  var query = `
+    UPDATE resource SET quantity = ${quantity}
+    WHERE resource_id = ${resource_id}
+  `;
   con.query(query, callback);
 };
 
-module.exports.updateResources = function (
-  resource_id,
-  price,
-  quantity,
-  p_date,
-  callback
-) {
-  var query =
-    "update resource set price='" +
-    price +
-    "',quantity='" +
-    quantity +
-    "',p_date='" +
-    p_date +
-    "' where resource_id=" +
-    resource_id;
-  console.log(query);
+module.exports.updateResources = function (resource_id, price, quantity, p_date, callback) {
+  var query = `
+    UPDATE resource SET price = ${price}, quantity = ${quantity}, p_date = "${p_date}"
+    WHERE resource_id = ${resource_id}
+  `;
   con.query(query, callback);
 };
 
 module.exports.getResource = function (resource_id, callback) {
-  var query = "select * from resource where resource_id=" + resource_id;
+  var query = "SELECT * FROM resource WHERE resource_id=" + resource_id;
   con.query(query, callback);
 };
 
@@ -263,18 +260,10 @@ module.exports.addResources = function (
   quantity,
   callback
 ) {
-  var query =
-    "Insert into resource (resource_id, resource_name,p_date,price,quantity) values('" +
-    resource_id +
-     "','" +
-    name +
-    "','" +
-    p_date +
-    "','" +
-    price +
-    "','" +
-    quantity +
-    "')";
+  var query = `
+    INSERT INTO resource (resource_id, resource_name, p_date, price, quantity)
+    VALUES (${resource_id}, "${name}", "${p_date}", ${price}, ${quantity})
+  `;
   console.log(query);
   con.query(query, callback);
 };
@@ -290,9 +279,6 @@ module.exports.countEntries = function (callback) {
 })
 };
 module.exports.deleteResourceColumn = function(resource_id,callback) {
-  console.log("i m here");
   var query = "DELETE FROM resource WHERE resource_id ="+resource_id;
-
   con.query(query,callback);
-  console.log(query);
 }

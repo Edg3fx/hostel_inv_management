@@ -4,18 +4,13 @@ var db = require.main.require ('./models/db_controller');
 var bodyPaser = require ('body-parser');
 
 
-router.get('*', function(req, res, next){
-	if(req.cookies['username'] == null){
+router.get('*', function(req, res, next) {
+	if (req.cookies['username'] == null) {
 		res.redirect('/login');
-	}else{
+	} else {
 		next();
 	}
 });
-
-
-
-
-
 
 router.get('/',function(req,res){
 
@@ -26,13 +21,10 @@ router.get('/',function(req,res){
    
 });
 
-
 router.get('/departments',function(req,res){
 
     db.getalldept(function(err,result){
-
         res.render('departments.ejs',{list:result});
-
     });
     
 });
@@ -100,15 +92,10 @@ router.post('/profile',function(req,res){
                     res.send("profile edited successfully");
                 }
                 if(!result1){ res.send("old password did not match");}
-                   
-                
-
+                 
             });
         }
-        
-
-
-    }) ;
+    });
 });
 
 module.exports =router;

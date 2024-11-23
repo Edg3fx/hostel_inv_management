@@ -12,14 +12,14 @@ router.get('/', function (req, res) {
     res.render('login.ejs');
 });
 
-var con = mysql.createConnection({
-    host: 'localhost',
-    user: 'root',
-    password: '',
-    database: 'nodelogin',
-    port:3306
-});
-
+const con = mysql.createConnection({
+    host: process.env.DB_HOST,
+    user: process.env.DB_USER,
+    password: process.env.DB_PASSWORD,
+    database: process.env.DB_DATABASE,
+    port: process.env.DB_PORT
+  });
+  
 router.use(
     session({
         secret: 'secret',
